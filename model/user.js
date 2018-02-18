@@ -12,3 +12,19 @@ const userSchema = new Schema({
 });
 
 const User = module.exports = mongoose.model('user', userSchema);
+
+User.prototype.encrypt = function(passWord) {
+  debug('User Encrypt Method');
+};
+
+User.prototype.login = function(passWord) {
+  debug('User Compare Method');
+};
+
+User.prototype.generateHash = function() {
+  debug('User Generate Hash Method');
+}
+
+User.prototype.signHash = function(hash) {
+  debug('User Sign Hash Method');
+}
