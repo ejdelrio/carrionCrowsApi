@@ -11,17 +11,19 @@ helper.models = {};
 
 helper.createUser = function(userObject) {
   debug('create user');
+  var output;
   let {userName, passWord} = userObject;
   return new Promise((reject, resolve) => {
     new User(userObject)
     .encrypt(passWord)
     .then(user => {
       helper.users[userName] = user;
+      output = user;
       return user;
     })
     .then(user => user.signHash())
     .then(token => helper.tokens[userName] = token)
-    .then(() => resolve())
+    .then(() => resolve(output))
     .catch(err => reject(err));
   });
 };

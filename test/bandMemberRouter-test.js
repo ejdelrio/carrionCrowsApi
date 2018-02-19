@@ -48,4 +48,7 @@ describe('bandMemberRouter Tests', function() {
       })
     })
   });
+  describe('POST /api/bandMember', function() {
+    
+  })
 });
