@@ -100,5 +100,16 @@ describe('bandMemberRouter Tests', function() {
         });
       });
     });
+    describe('PUT /api/bandMember/:_id', function() {
+      before(done => {
+        done();
+      })
+
+      after(done => {
+        clearDB()
+        .then(() => done())
+        done();
+      })
+    })
   });
 });

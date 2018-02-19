@@ -1,6 +1,7 @@
 'use strict';
 
 const User = require('../../model/user.js');
+const BandMember = require('../../model/bandMember.js');
 const debug = require('debug')('ccApp: Test Helper');
 
 const helper = module.exports = {};
@@ -49,6 +50,7 @@ helper.clearDB = function() {
   helper.models = {};
 
   return Promise.all([
-    User.remove({})
+    User.remove({}),
+    BandMember.remove({})
   ]);
 };
