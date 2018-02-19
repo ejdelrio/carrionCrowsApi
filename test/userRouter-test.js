@@ -61,4 +61,13 @@ describe('Example test', function() {
       })
     })
   })
+  describe('GET /api/user', function() {
+    before(done => {
+      done();
+    })
+
+    after(done => {
+      done();
+    })
+  })
 });
