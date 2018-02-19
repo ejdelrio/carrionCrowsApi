@@ -49,11 +49,13 @@ userSchema.methods.generateHash = function() {
 
     function _generateHash() {
       this.hash = crypto.randomBytes(32).toString('hex');
+      console.log('CURRENT_USER: ', this);
+      console.log('NUMBER_OF_TRIES: ', tries);
 
       this.save()
       .then(() => resolve(this.hash))
       .catch(err => {
-        if(tries > 3) reject(createError(err));
+        if(tries > 3) return reject(createError(err));
         tries++;
         return _generateHash.call(this);
       })

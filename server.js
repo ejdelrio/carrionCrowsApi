@@ -15,6 +15,7 @@ const userRouter = require('./route/userRouter');
 app.use(morgan('dev'));
 app.use(cors());
 app.use(userRouter);
+app.use(require('./lib/error'));
 
 app.listen(PORT, () => {
 	debug('Server active on port: ', PORT);

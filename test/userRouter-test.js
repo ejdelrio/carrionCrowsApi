@@ -63,17 +63,23 @@ describe('Example test', function() {
   })
   describe('GET /api/user', function() {
     before(done => {
-      done();
+      new User(testUser)
+      .encrypt(testUser.passWord)
+      .then(user => user.save())
+      .then(() => done())
+      .catch(err => done(err));
     })
 
     after(done => {
-      done();
+      User.remove({})
+      .then(() => done())
+      .catch(err => done(err));
     })
 
     describe('With valid credentials', function() {
       it('Should return a 200 status code and a json web token', done => {
         superagent.get(`${url}/api/user`)
-        .auth('')
+        .auth(testUser.userName, testUser.passWord)
         .end((err, res) => {
           if(err) return done(err);
           done();
@@ -84,7 +90,7 @@ describe('Example test', function() {
     describe('With invalid credentials', function() {
       it('Should return a 401 error code', done => {
         superagent.get(`${url}/api/user`)
-        .auth('')
+        .auth('invalid', 'invalid')
         .end(err => {
           expect(err.status).to.equal(401);
           done();
