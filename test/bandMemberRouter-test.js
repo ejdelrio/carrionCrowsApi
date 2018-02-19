@@ -6,7 +6,7 @@ const superagent = require('superagent');
 const BandMember = require('../model/bandMember.js');
 const {url, testUser, testBandMember} = require('./lib/testTemplates');
 const helper = require('./lib/helper');
-const {createUser, clearDB} = helper;
+const {createUser, clearDB, createModel} = helper;
 
 require('../server.js');
 
@@ -24,11 +24,16 @@ describe('bandMemberRouter Tests', function() {
   })
   describe('GET /api/bandMember', function() {
     before(done => {
-      done();
+      createModel('bandMember', BandMember, testBandMember)
+      .then(() => done())
+      .catch(err => done(err));
     })
 
     after(done => {
-      done();
+      helper.models = {};
+      BandMember.remove({})
+      .then(() => done())
+      .catch(err => done(err));
     })
 
     it('Should return an array of band member models', done => {

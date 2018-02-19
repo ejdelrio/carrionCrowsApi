@@ -26,12 +26,26 @@ helper.createUser = function(userObject) {
   });
 };
 
+helper.createModel = function(modelName, Model, testModel) {
+  debug('Create Model');
+
+  return new Promise((reject, resolve) => {
+    new Model(testModel)
+    .save()
+    .then(model => {
+      helper.models[modelName] = model;
+      resolve(model);
+    })
+    .catch(err => reject(err));
+  })
+}
+
 helper.clearDB = function() {
   debug('clearDB');
   helper.users = {};
   helper.tokens = {};
   helper.models = {};
-  
+
   return Promise.all([
     User.remove({})
   ]);
