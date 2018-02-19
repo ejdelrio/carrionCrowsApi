@@ -58,8 +58,6 @@ describe('bandMemberRouter Tests', function() {
 
       it('Should return a bandMember object and 200 status code', done => {
         superagent.post(`${url}/api/bandMember`)
-        .set('Authorization', `Bearer ${helper.tokens.testUser}`)
-        .send(testBandMember)
         .end((err, res) => {
           if(err) return done(err);
           expect(Array.isArray(res.body)).to.equal(true);
@@ -70,10 +68,32 @@ describe('bandMemberRouter Tests', function() {
 
     });
     describe('With valid credentials and an invalid request body', function() {
+      after(done => {
+        BandMember.remove({})
+        .then(() => done())
+        .catch(err => done(err));
+      })
 
+      it('Should return a 400 error code', done => {
+        superagent.post(`${url}/api/bandMember`)
+        .set('Authorization', `Bearer ${helper.tokens.testUser}`)
+        .send({})
+        .end(err => {
+          expect(err.status).to.equal(400);
+          done();
+        });
+      });
     });
     describe('With invalid credentials and and invalid body', function() {
-
-    })
-  })
+      it('Should return a 401 error code', done => {
+        superagent.post(`${url}/api/bandMember`)
+        .set('Authorization', 'Bearer invalid')
+        .send({})
+        .end(err => {
+          expect(err.status).to.equal(401);
+          done();
+        });
+      });
+    });
+  });
 });
