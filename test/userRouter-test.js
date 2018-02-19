@@ -69,5 +69,27 @@ describe('Example test', function() {
     after(done => {
       done();
     })
+
+    describe('With valid credentials', function() {
+      it('Should return a 200 status code and a json web token', done => {
+        superagent.get(`${url}/api/user`)
+        .auth('')
+        .end((err, res) => {
+          if(err) return done(err);
+          done();
+        })
+      })
+    })
+
+    describe('With invalid credentials', function() {
+      it('Should return a 401 error code', done => {
+        superagent.get(`${url}/api/user`)
+        .auth('')
+        .end(err => {
+          expect(err.status).to.equal(401);
+          done();
+        })
+      })
+    })
   })
 });
