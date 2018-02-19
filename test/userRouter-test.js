@@ -20,7 +20,8 @@ describe('Example test', function() {
         .send(testUser)
         .end((err, res) => {
           if(err) return done(err);
-          console.log(res.text);
+          expect(res.status).to.equal(200);
+          expect(typeof res.text).to.equal('string');
           done()
         })
       })
@@ -29,6 +30,30 @@ describe('Example test', function() {
       it('It should return a 400 error code', done => {
         superagent.post(`${url}/api/user`)
         .send({})
+        .end(err => {
+          expect(err.status).to.equal(400);
+          done();
+        })
+      })
+    })
+    describe('With a duplicate user', function () {
+      before(done => {
+        new User(testUser)
+        .encrypt(testUser.passWord)
+        .then(user => user.save())
+        .then(() => done())
+        .catch(err => done(err));
+      });
+
+      after(done => {
+        User.remove({})
+        .then(() => done())
+        .catch(err => done(err));
+      })
+
+      it('Should return a 400 error code', done => {
+        superagent.post(`${url}/api/user`)
+        .send(testUser)
         .end(err => {
           expect(err.status).to.equal(400);
           done();

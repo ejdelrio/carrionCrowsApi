@@ -15,8 +15,9 @@ userRouter.post('/api/user', jsonParser, function(req, res, next) {
   delete req.body.passWord;
 
   let newUser = new User(req.body);
-  console.log(newUser)
+  
   newUser.encrypt(passWord)
+  .then(user => user.save())
   .then(user => user.signHash())
   .then(token => {
     res.send(token);
