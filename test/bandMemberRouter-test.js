@@ -102,14 +102,31 @@ describe('bandMemberRouter Tests', function() {
     });
     describe('PUT /api/bandMember/:_id', function() {
       before(done => {
-        done();
-      })
+        createModel('testBandMember', BandMember, testBandMember)
+        .then(() => done())
+        .catch(err => done(err));
+      });
 
       after(done => {
         clearDB()
         .then(() => done())
-        done();
-      })
-    })
+        .catch(err => done(err));
+      });
+
+      it('Should return a 200 status code and updated Band Member', done => {
+        let reqModel = helper.models.testBandMember;
+        superagent.put(`${url}/api/bandMember/${reqModel._id}`)
+        .send({name: 'Dildo Baggins'})
+        .set('Authorization', `Bearer ${helper.tokens.testUser}`)
+        .end((err, res) => {
+          if(err) return done(err);
+          expect(res.status).to.equal(200);
+          expect(res.body._id).to.equal(reqModel._id);
+          expect(res.body.name).to.not.equal(reqModel.name);
+          expect(res.instruments).to.deep.equal(reqModel.instruments);
+          done();
+        })
+      });
+    });
   });
 });
