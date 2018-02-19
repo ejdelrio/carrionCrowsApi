@@ -16,3 +16,13 @@ bandMemberRouter.get('/api/bandMember', function(req, res, next) {
   .then(allMembers => res.json(allMembers))
   .catch(err => next(err));
 });
+
+bandMemberRouter.post('/api/bandMember', jsonParser, bearerAuth, function(req, res, next) {
+  debug('POST /api/bandMember');
+
+  console.log(req.body);
+  new BandMember(req.body)
+  .save()
+  .then(member => res.json(member))
+  .catch(err => next(createError(400, err)));
+});

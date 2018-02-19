@@ -58,10 +58,15 @@ describe('bandMemberRouter Tests', function() {
 
       it('Should return a bandMember object and 200 status code', done => {
         superagent.post(`${url}/api/bandMember`)
+        .set('Authorization', `Bearer ${helper.tokens.testUser}`)
+        .send(testBandMember)
         .end((err, res) => {
           if(err) return done(err);
-          expect(Array.isArray(res.body)).to.equal(true);
-          let resMember = req.body[0];
+          let {name, bio, instruments} = res.body;
+          expect(res.status).to.equal(200);
+          expect(name).to.equal(testBandMember.name);
+          expect(bio).to.equal(testBandMember.bio);
+          expect(instruments).to.deep.equal(testBandMember.instruments);
           done();
         })
       })
