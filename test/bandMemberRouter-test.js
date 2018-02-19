@@ -124,23 +124,23 @@ describe('bandMemberRouter Tests', function() {
           .end((err, res) => {
             if(err) return done(err);
             expect(res.status).to.equal(200);
-            expect(res.body._id).to.equal(reqModel._id);
+            expect(res.body._id).to.equal(reqModel._id.toString());
             expect(res.body.name).to.not.equal(reqModel.name);
-            expect(res.instruments).to.deep.equal(reqModel.instruments);
+            expect(res.body.instruments).to.deep.equal(reqModel.instruments);
             done();
           });
         });
       });
 
-      describe('With valid credentials and an invalid request body', function() {
+      describe('With valid credentials and an invalid request id', function() {
 
         it('Should return a 400 error code', done => {
           let reqModel = helper.models.testBandMember;
-          superagent.put(`${url}/api/bandMember/${reqModel._id}`)
-          .send({NAME: 'Dildo Baggins'})
+          superagent.put(`${url}/api/bandMember/${1234}`)
+          .send({name: 'bob'})
           .set('Authorization', `Bearer ${helper.tokens.testUser}`)
           .end(err => {
-            expect(err.status).to.equal(400);
+            expect(err.status).to.equal(404);
             done();
           });
         });

@@ -26,3 +26,12 @@ bandMemberRouter.post('/api/bandMember', jsonParser, bearerAuth, function(req, r
   .then(member => res.json(member))
   .catch(err => next(createError(400, err)));
 });
+
+bandMemberRouter.put('/api/bandMember/:_id', jsonParser, bearerAuth, function(req, res, next) {
+  debug('POST /api/bandMember');
+
+  BandMember
+  .findByIdAndUpdate(req.params._id, req.body, {new: true})
+  .then(member => res.json(member))
+  .catch(err => next(createError(404, 'Object id not found')));
+});
