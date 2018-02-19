@@ -62,4 +62,18 @@ describe('Album Router Test', function() {
       });
     });
   });
+  describe('GET /api/album', function() {
+    it('Should return an album and a 200 status code', done => {
+      superagent.get(`${url}/api/album`)
+      .end((err, res) => {
+        if(err) return done(err);
+        expect(res.status).to.equal(200);
+        expect(Array.isArray(res.body)).to.equal(true);
+        let {name, genre} = res.body.pop();
+        expect(name).to.equal(testAlbum.name);
+        expect(genre).to.equal(testAlbum.genre);
+        done();
+      });
+    });
+  });
 });

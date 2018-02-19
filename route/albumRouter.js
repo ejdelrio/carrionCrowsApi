@@ -17,3 +17,11 @@ albumRouter.post('/api/album', bearerAuth, jsonParser, function(req, res, next) 
   .then(album => res.json(album))
   .catch(err => next(createError(400, err.message)));
 });
+
+albumRouter.get('/api/album', function(req, res, next) {
+  debug('GET /api/album');
+
+  Album.find({})
+  .then(allAlbums => res.json(allAlbums))
+  .catch(err => next(createError(400, err.message)));
+})
