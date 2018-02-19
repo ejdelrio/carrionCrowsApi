@@ -40,7 +40,7 @@ describe('Example test', function() {
       before(done => {
         new User(testUser)
         .encrypt(testUser.passWord)
-        .then(user => user.save())
+        .then(user => user.signHash())
         .then(() => done())
         .catch(err => done(err));
       });

@@ -35,18 +35,14 @@ userRouter.get('/api/user', basicAuth, function(req, res, next) {
   delete req.auth.passWord;
 
   User.findOne(req.auth)
-  .then(user => {
-    console.log('__USER__: ', user, '\n');
-    return user.login(passWord)
-  })
-  .then(user => user.generateHash())
+  .then(user => user.login(passWord))
+  .then(user => user.signHash())
   .then(token => {
-    console.log('__TOKEN__', token)
+    console.log('__TOKEN__', token);
     res.send(token);
     res.end();
     next();
   })
   .catch(err => next(createError(err, 400)));
 
-  next();
 })

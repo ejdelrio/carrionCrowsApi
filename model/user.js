@@ -50,12 +50,13 @@ userSchema.methods.generateHash = function() {
     function _generateHash() {
       this.hash = crypto.randomBytes(32).toString('hex');
       console.log('CURRENT_USER: ', this);
-      console.log('NUMBER_OF_TRIES: ', tries);
+      console.log('\nNUMBER_OF_TRIES: ', tries);
+      console.log('\n-----------------\n')
 
       this.save()
       .then(() => resolve(this.hash))
       .catch(err => {
-        if(tries > 3) return reject(createError(err));
+        if(tries > 2) return reject(createError(err));
         tries++;
         return _generateHash.call(this);
       })
@@ -69,7 +70,7 @@ userSchema.methods.signHash = function() {
   let currentUser = this;
 
   return new Promise((resolve, reject) => {
-    this.generateHash()
+    currentUser.generateHash()
     .then(hash => resolve(jwt.sign({token: hash}, process.env.APP_SECRET)))
     .catch( err => reject(err));
   });
