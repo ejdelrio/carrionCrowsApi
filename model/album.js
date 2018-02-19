@@ -8,7 +8,8 @@ const albumSchema = new Schema({
   name: {type: 'string', required: true},
   tracks: [{type: Schema.Types.ObjectId, ref: 'track'}],
   description: {type: 'string', required: false},
-  genre: {type: 'string', required: false, default: ''}
+  genre: {type: 'string', required: false, default: ''},
+  photoUrl: {type: 'string', required: false, default: ''}
 });
 
 module.exports = mongoose.model('album', albumSchema);
