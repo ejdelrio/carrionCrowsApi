@@ -101,6 +101,7 @@ describe('bandMemberRouter Tests', function() {
       });
     });
     describe('PUT /api/bandMember/:_id', function() {
+
       before(done => {
         createModel('testBandMember', BandMember, testBandMember)
         .then(() => done())
@@ -113,19 +114,50 @@ describe('bandMemberRouter Tests', function() {
         .catch(err => done(err));
       });
 
-      it('Should return a 200 status code and updated Band Member', done => {
-        let reqModel = helper.models.testBandMember;
-        superagent.put(`${url}/api/bandMember/${reqModel._id}`)
-        .send({name: 'Dildo Baggins'})
-        .set('Authorization', `Bearer ${helper.tokens.testUser}`)
-        .end((err, res) => {
-          if(err) return done(err);
-          expect(res.status).to.equal(200);
-          expect(res.body._id).to.equal(reqModel._id);
-          expect(res.body.name).to.not.equal(reqModel.name);
-          expect(res.instruments).to.deep.equal(reqModel.instruments);
-          done();
-        })
+      describe('With valid credentials and valid request body', function() {
+
+        it('Should return a 200 status code and updated Band Member', done => {
+          let reqModel = helper.models.testBandMember;
+          superagent.put(`${url}/api/bandMember/${reqModel._id}`)
+          .send({name: 'Dildo Baggins'})
+          .set('Authorization', `Bearer ${helper.tokens.testUser}`)
+          .end((err, res) => {
+            if(err) return done(err);
+            expect(res.status).to.equal(200);
+            expect(res.body._id).to.equal(reqModel._id);
+            expect(res.body.name).to.not.equal(reqModel.name);
+            expect(res.instruments).to.deep.equal(reqModel.instruments);
+            done();
+          });
+        });
+      });
+
+      describe('With valid credentials and an invalid request body', function() {
+
+        it('Should return a 400 error code', done => {
+          let reqModel = helper.models.testBandMember;
+          superagent.put(`${url}/api/bandMember/${reqModel._id}`)
+          .send({NAME: 'Dildo Baggins'})
+          .set('Authorization', `Bearer ${helper.tokens.testUser}`)
+          .end(err => {
+            expect(err.status).to.equal(400);
+            done();
+          });
+        });
+
+        describe('With invalid credentials and an invalid request body', function() {
+
+          it('Should return a 401 error code', done => {
+            let reqModel = helper.models.testBandMember;
+            superagent.put(`${url}/api/bandMember/${reqModel._id}`)
+            .send({NAME: 'Dildo Baggins'})
+            .set('Authorization', 'Bearer invaid')
+            .end(err => {
+              expect(err.status).to.equal(401);
+              done();
+            });
+          });
+        });
       });
     });
   });
