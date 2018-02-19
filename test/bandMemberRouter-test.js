@@ -176,7 +176,7 @@ describe('bandMemberRouter Tests', function() {
         superagent.delete(`${url}/api/bandMember/${reqModel._id}`)
         .set('Authorization', `Bearer ${helper.tokens.testUser}`)
         .end((err, res) => {
-          expect(res.status).to.equal(204);
+          expect(res.status).to.equal(200);
           done();
         });
       });

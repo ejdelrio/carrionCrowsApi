@@ -35,3 +35,12 @@ bandMemberRouter.put('/api/bandMember/:_id', jsonParser, bearerAuth, function(re
   .then(member => res.json(member))
   .catch(err => next(createError(404, 'Object id not found')));
 });
+
+bandMemberRouter.delete('/api/bandMember/:_id', jsonParser, bearerAuth, function(req, res, next) {
+  debug('DELETE /api/bandMember');
+
+  BandMember
+  .findByIdAndRemove(req.params._id)
+  .then(() => res.end())
+  .catch(err => next(createError(404, 'Object id not found')));
+})
