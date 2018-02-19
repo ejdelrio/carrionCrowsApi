@@ -4,6 +4,7 @@ const debug = require('debug')('ccApp: userModel');
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
+const crypto = require('crypto');
 const createError = require('http-errors');
 const {Schema} = mongoose;
 
@@ -14,9 +15,7 @@ const userSchema = new Schema({
   hash: {type: 'string', unique: true}
 });
 
-const User = module.exports = mongoose.model('user', userSchema);
-
-User.prototype.encrypt = function(passWord) {
+userSchema.methods.encrypt = function(passWord) {
   debug('User Encrypt Method');
 
   return new Promise((resolve, reject) => {
@@ -28,7 +27,7 @@ User.prototype.encrypt = function(passWord) {
   });
 };
 
-User.prototype.login = function(passWord) {
+userSchema.methods.login = function(passWord) {
   debug('User Compare Method');
 
   return new Promise((resolve, reject) => {
@@ -40,7 +39,7 @@ User.prototype.login = function(passWord) {
   });
 };
 
-User.prototype.generateHash = function() {
+userSchema.methods.generateHash = function() {
   debug('User Generate Hash Method');
   let tries = 0;
 
@@ -63,12 +62,15 @@ User.prototype.generateHash = function() {
   });
 };
 
-User.prototype.signHash = function(hash) {
+userSchema.methods.signHash = function() {
   debug('User Sign Hash Method');
+  let currentUser = this;
 
   return new Promise((resolve, reject) => {
-    this.generateToken()
+    this.generateHash()
     .then(hash => resolve(jwt.sign({token: hash}, process.env.APP_SECRET)))
     .catch( err => reject(err));
   });
 };
+
+const User = module.exports = mongoose.model('user', userSchema);
