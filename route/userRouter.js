@@ -38,11 +38,10 @@ userRouter.get('/api/user', basicAuth, function(req, res, next) {
   .then(user => user.login(passWord))
   .then(user => user.signHash())
   .then(token => {
-    console.log('__TOKEN__', token);
     res.send(token);
     res.end();
     next();
   })
-  .catch(err => next(createError(err, 400)));
+  .catch(err => next(createError(err, 401)));
 
 })

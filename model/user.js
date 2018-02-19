@@ -49,9 +49,6 @@ userSchema.methods.generateHash = function() {
 
     function _generateHash() {
       this.hash = crypto.randomBytes(32).toString('hex');
-      console.log('CURRENT_USER: ', this);
-      console.log('\nNUMBER_OF_TRIES: ', tries);
-      console.log('\n-----------------\n')
 
       this.save()
       .then(() => resolve(this.hash))
