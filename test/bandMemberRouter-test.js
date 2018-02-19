@@ -109,7 +109,7 @@ describe('bandMemberRouter Tests', function() {
       });
 
       after(done => {
-        clearDB()
+        BandMember.remove({})
         .then(() => done())
         .catch(err => done(err));
       });
@@ -160,5 +160,60 @@ describe('bandMemberRouter Tests', function() {
         });
       });
     });
+  });
+  describe('DELETE /api/bandMember/:id', function() {
+
+    describe('With valid credentials and request id', function() {
+
+      before(done => {
+        createModel('testBandMember', BandMember, testBandMember)
+        .then(() => done())
+        .catch(err => done(err));
+      });
+
+      it('Should return a 204 status code', done => {
+        let reqModel = helper.models.testBandMember;
+        superagent.delete(`${url}/api/bandMember/${reqModel._id}`)
+        .set('Authorization', `Bearer ${helper.tokens.testUser}`)
+        .end((err, res) => {
+          expect(res.status).to.equal(204);
+          done();
+        });
+      });
+    });
+    describe('With valid credentials and an invalid request id', function() {
+
+      before(done => {
+        createModel('testBandMember', BandMember, testBandMember)
+        .then(() => done())
+        .catch(err => done(err));
+      });
+
+      it('Should return a 404 error code', done => {
+        superagent.delete(`${url}/api/bandMember/${1234}`)
+        .set('Authorization', `Bearer ${helper.tokens.testUser}`)
+        .end(err => {
+          expect(err.status).to.equal(404);
+          done();
+        });
+      });
+    });
+    describe('With invalid credentials and an invalid request id', function() {
+
+      before(done => {
+        createModel('testBandMember', BandMember, testBandMember)
+        .then(() => done())
+        .catch(err => done(err));
+      });
+
+      it('Should return a 401 error code', done => {
+        superagent.delete(`${url}/api/bandMember/${1234}`)
+        .set('Authorization', 'Bearer invalid')
+        .end(err => {
+          expect(err.status).to.equal(401);
+          done();
+        })
+      })
+    })
   });
 });
