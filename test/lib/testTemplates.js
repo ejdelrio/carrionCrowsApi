@@ -10,3 +10,9 @@ templates.testUser = {
   passWord: 'testPassword',
   email: 'testEmail'
 }
+
+templates.bandMember = {
+  name: 'Boaty McBoatBoat',
+  instruments: ['Guitar', 'Bass'],
+  bio: 'Likes boats'
+}
