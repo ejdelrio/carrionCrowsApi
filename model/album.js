@@ -9,7 +9,8 @@ const albumSchema = new Schema({
   tracks: [{type: Schema.Types.ObjectId, ref: 'track'}],
   description: {type: 'string', required: false},
   genre: {type: 'string', required: false, default: ''},
-  photoUrl: {type: 'string', required: false, default: ''}
+  photoUrl: {type: 'string', required: false, default: ''},
+  published: {type: Date, default: Date.now}
 });
 
 module.exports = mongoose.model('album', albumSchema);
