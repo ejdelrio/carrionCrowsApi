@@ -1,17 +1,19 @@
 'use strict';
 
 const expect = require('chai').expect;
-const User = require('../model/user.js');
 const superagent = require('superagent');
 
+const User = require('../model/user.js');
+const helper = require('./lib/helper.js');
 const {url, testUser} = require('./lib/testTemplates.js');
+const {createUser, clearDB} = helper;
 require('../server.js');
 
 describe('Example test', function() {
   describe('POST /api/user', function () {
     describe('With a valid request body', function() {
       after(done => {
-        User.remove({})
+        clearDB()
         .then(() => done())
         .catch(err => done(err));
       })
@@ -71,7 +73,7 @@ describe('Example test', function() {
     })
 
     after(done => {
-      User.remove({})
+      clearDB({})
       .then(() => done())
       .catch(err => done(err));
     })

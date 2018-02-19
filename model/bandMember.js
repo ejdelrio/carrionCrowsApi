@@ -7,8 +7,8 @@ const {Schema} = mongoose;
 const bandMemberSchema = new Schema({
   name: {type: 'string', required: true},
   bio: {type: 'string', required: false, default: ''},
-  insturments: [{type: 'string', required: false}],
-  photoUrl: {type: 'string', required: false, default: ''}
+  photoUrl: {type: 'string', required: false, default: ''},
+  instruments: [{type: Schema.Types.ObjectId, required: false}]
 });
 
 module.exports = mongoose.model('bandMember', bandMemberSchema);

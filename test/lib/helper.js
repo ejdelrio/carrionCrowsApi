@@ -28,6 +28,10 @@ helper.createUser = function(userObject) {
 
 helper.clearDB = function() {
   debug('clearDB');
+  helper.users = {};
+  helper.tokens = {};
+  helper.models = {};
+  
   return Promise.all([
     User.remove({})
   ]);
