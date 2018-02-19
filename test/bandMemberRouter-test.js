@@ -40,15 +40,40 @@ describe('bandMemberRouter Tests', function() {
       superagent.get(`${url}/api/bandMember`)
       .end((err, res) => {
         if(err) return done(err);
-        let reqMember = req.body;
-        expect(Array.isArray(req.body)).to.equal(true);
-        expect(reqMember.name).to.equal(testBandMember.name);
-        expect(reqMember.instruments).to.deep.equal(testBandMember.instruments);
+        expect(Array.isArray(res.body)).to.equal(true);
+        let resMember = res.body[0];
+        expect(resMember.name).to.equal(testBandMember.name);
+        expect(resMember.instruments).to.deep.equal(testBandMember.instruments);
         done();
       })
     })
   });
   describe('POST /api/bandMember', function() {
-    
+    describe('With a valid request body and valid credentials', function() {
+      after(done => {
+        BandMember.remove({})
+        .then(() => done())
+        .catch(err => done(err));
+      })
+
+      it('Should return a bandMember object and 200 status code', done => {
+        superagent.post(`${url}/api/bandMember`)
+        .set('Authorization', `Bearer ${helper.tokens.testUser}`)
+        .send(testBandMember)
+        .end((err, res) => {
+          if(err) return done(err);
+          expect(Array.isArray(res.body)).to.equal(true);
+          let resMember = req.body[0];
+          done();
+        })
+      })
+
+    });
+    describe('With valid credentials and an invalid request body', function() {
+
+    });
+    describe('With invalid credentials and and invalid body', function() {
+
+    })
   })
 });

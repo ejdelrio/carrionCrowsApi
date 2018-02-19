@@ -11,7 +11,7 @@ templates.testUser = {
   email: 'testEmail'
 }
 
-templates.bandMember = {
+templates.testBandMember = {
   name: 'Boaty McBoatBoat',
   instruments: ['Guitar', 'Bass'],
   bio: 'Likes boats'

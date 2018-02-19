@@ -12,9 +12,11 @@ const app = express();
 mongoose.connect(process.env.MONGODB_URI);
 
 const userRouter = require('./route/userRouter');
+const bandMemberRouter = require('./route/bandMemberRouter')
 app.use(morgan('dev'));
 app.use(cors());
 app.use(userRouter);
+app.use(bandMemberRouter);
 app.use(require('./lib/error'));
 
 app.listen(PORT, () => {

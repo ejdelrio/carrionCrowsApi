@@ -13,7 +13,7 @@ helper.createUser = function(userObject) {
   debug('create user');
   var output;
   let {userName, passWord} = userObject;
-  return new Promise((reject, resolve) => {
+  return new Promise((resolve, reject) => {
     new User(userObject)
     .encrypt(passWord)
     .then(user => {
@@ -31,7 +31,7 @@ helper.createUser = function(userObject) {
 helper.createModel = function(modelName, Model, testModel) {
   debug('Create Model');
 
-  return new Promise((reject, resolve) => {
+  return new Promise((resolve, reject) => {
     new Model(testModel)
     .save()
     .then(model => {
