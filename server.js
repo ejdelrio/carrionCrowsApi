@@ -13,10 +13,13 @@ mongoose.connect(process.env.MONGODB_URI);
 
 const userRouter = require('./route/userRouter');
 const bandMemberRouter = require('./route/bandMemberRouter')
+const albumRouter = require('./route/albumRouter');
+
 app.use(morgan('dev'));
 app.use(cors());
 app.use(userRouter);
 app.use(bandMemberRouter);
+app.use(albumRouter);
 app.use(require('./lib/error'));
 
 app.listen(PORT, () => {

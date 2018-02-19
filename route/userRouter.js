@@ -25,7 +25,7 @@ userRouter.post('/api/user', jsonParser, function(req, res, next) {
     res.end();
     next();
   })
-  .catch(err => next(createError(400, err)));
+  .catch(err => next(createError(400, err.message)));
 });
 
 userRouter.get('/api/user', basicAuth, function(req, res, next) {
@@ -42,6 +42,6 @@ userRouter.get('/api/user', basicAuth, function(req, res, next) {
     res.end();
     next();
   })
-  .catch(err => next(createError(err, 401)));
+  .catch(err => next(createError(401, err.message)));
 
 })

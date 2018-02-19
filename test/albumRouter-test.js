@@ -31,6 +31,8 @@ describe('Album Router Test', function() {
         .end((err, res) => {
           if(err) return done(err);
           expect(res.status).to.equal(200);
+          expect(res.body.name).to.equal(testAlbum.name);
+          expect(res.body.genre).to.equal(testAlbum.genre);
           done();
         });
       });

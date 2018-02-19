@@ -14,7 +14,7 @@ bandMemberRouter.get('/api/bandMember', function(req, res, next) {
 
   BandMember.find({})
   .then(allMembers => res.json(allMembers))
-  .catch(err => next(err));
+  .catch(err => next(createError(400, err.message)));
 });
 
 bandMemberRouter.post('/api/bandMember', jsonParser, bearerAuth, function(req, res, next) {
@@ -24,7 +24,7 @@ bandMemberRouter.post('/api/bandMember', jsonParser, bearerAuth, function(req, r
   new BandMember(req.body)
   .save()
   .then(member => res.json(member))
-  .catch(err => next(createError(400, err)));
+  .catch(err => next(createError(400, err.message)));
 });
 
 bandMemberRouter.put('/api/bandMember/:_id', jsonParser, bearerAuth, function(req, res, next) {

@@ -16,3 +16,7 @@ templates.testBandMember = {
   instruments: ['Guitar', 'Bass'],
   bio: 'Likes boats'
 }
+templates.testAlbum = {
+  name: 'testAlbum',
+  genre: 'metal'
+}

@@ -53,7 +53,7 @@ userSchema.methods.generateHash = function() {
       this.save()
       .then(() => resolve(this.hash))
       .catch(err => {
-        if(tries > 2) return reject(createError(err));
+        if(tries > 2) return reject(err);
         tries++;
         return _generateHash.call(this);
       })
