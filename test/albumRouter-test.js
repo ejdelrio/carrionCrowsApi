@@ -117,4 +117,37 @@ describe('Album Router Test', function() {
       });
     });
   });
+  describe('DELETE /api/album', function() {
+    describe('With valid credentials and object id', function() {
+      it('Should return a 200 status code', done => {
+        superagent.delete(`${url}/api/album/${helper.models.testAlbum._id}`)
+        .set('Authorization', `Bearer ${helper.tokens.testUser}`)
+        .end((err, res) => {
+          if(err) return done(err);
+          expect(res.status).to.equal(200);
+          done();
+        });
+      });
+    });
+    describe('With valid credentials and an invalid object id', function() {
+      it('Should return a 400 error code', done => {
+        superagent.delete(`${url}/api/album/${helper.models.testAlbum._id}`)
+        .set('Authorization', `Bearer ${helper.tokens.testUser}`)
+        .end(err => {
+          expect(err.status).to.equal(400);
+          done();
+        });
+      });
+    });
+    describe('With invalid credentials and an invalid object id', function() {
+      it('Should return a 401 error code', done => {
+        superagent.delete(`${url}/api/album/${helper.models.testAlbum._id}`)
+        .set('Authorization', `Bearer ${1234}`)
+        .end(err => {
+          expect(err.status).to.equal(401);
+          done();
+        });
+      });
+    });
+  });
 });
