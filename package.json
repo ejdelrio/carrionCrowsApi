@@ -4,7 +4,7 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "test": "DEBUG='ccApp:*' mocha",
+    "test": "DEBUG='ccApp:*' mocha --timeout 60000",
     "start": "DEBUG='ccApp:*' node server.js"
   },
   "repository": {

@@ -12,4 +12,4 @@ const trackSchema = new Schema({
   awsURI: {type: 'string', required: true}
 });
 
-module.export = mongoose.model('track', trackSchema);
+module.exports = mongoose.model('track', trackSchema);

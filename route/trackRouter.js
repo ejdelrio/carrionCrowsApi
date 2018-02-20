@@ -11,7 +11,8 @@ const createError = require('http-errors');
 const debug = require('debug')('ccApp: Track Router');
 
 const Track = require('../model/track.js');
-const bearerAuth = require('../lib/bearerAuth.js');
+const Album = require('../model/album.js');
+const bearerAuth = require('../lib/bearer.js');
 
 AWS.config.setPromisesDependency(require('bluebird'));
 
@@ -53,11 +54,11 @@ trackRouter.post('/api/track/:albumId', bearerAuth, upload.single('soundFile'), 
     trackObject = {
       name: req.body.name,
       url: req.body.url,
-      albumId: req.params.id,
+      albumId: req.params.albumId,
       awsKey: s3data.key,
       awsURI: s3data.Location
     }
-    return new Track(trackData).save();
+    return new Track(trackObject).save();
   })
   .then(track => {
     trackObject = track;
@@ -67,6 +68,7 @@ trackRouter.post('/api/track/:albumId', bearerAuth, upload.single('soundFile'), 
       {new: true}
     );
   })
+  .then(() => console.log('__TRACK_CREATED__'))
   .then(() => res.json(trackObject))
   .catch(err => next(createError(400, err.message)));
 
@@ -97,6 +99,7 @@ trackRouter.delete(`/api/album/:id/track/:_id`, bearerAuth, function (req, rsp, 
     })
     .then(() => {
       rsp.send(204);
+      rsp.end();
       done();
     })
     .catch((err) => {
