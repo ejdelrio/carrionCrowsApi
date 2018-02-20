@@ -38,6 +38,7 @@ trackRouter.post('/api/track/:albumId', bearerAuth, upload.single('soundFile'), 
   if (!req.file.path) return next(createError(500, 'file not saved'));
   
   let ext = path.extname(req.file.originalname);
+  var trackObject;
 
   let params = {
     ACL: 'public-read',
@@ -46,25 +47,28 @@ trackRouter.post('/api/track/:albumId', bearerAuth, upload.single('soundFile'), 
     Body: fs.createReadStream(req.file.path)
   };
   
-  Album.findById(req.params.id)
-    .then(() => s3uploadProm(params))
-    .then(s3data => {
-      del([`${dataDir}/*`]);
-      let trackData = {
-        title: req.body.title,
-        url: req.body.url,
-        userID: req.user._id,
-        albumID: req.params.id,
-        awsKey: s3data.key,
-        awsURI: s3data.Location
-      }
-      return new Track(trackData).save();
-    })
-    .then(track => {
-      console.log('CREATED THE TRACK!', track);
-      res.json(track)
-    })
-    .catch(err => next(createError(400, err.message)));
+  s3uploadProm(params)
+  .then(s3data => {
+    del([`${dataDir}/*`]);
+    trackObject = {
+      name: req.body.name,
+      url: req.body.url,
+      albumId: req.params.id,
+      awsKey: s3data.key,
+      awsURI: s3data.Location
+    }
+    return new Track(trackData).save();
+  })
+  .then(track => {
+    trackObject = track;
+    return Album.findByIdAndUpdate(
+      req.params._id,
+      {$push: {'tracks': track._id}},
+      {new: true}
+    );
+  })
+  .then(() => res.json(trackObject))
+  .catch(err => next(createError(400, err.message)));
 
 });
 
