@@ -33,6 +33,7 @@ describe('Album Router Test', function() {
           expect(res.status).to.equal(200);
           expect(res.body.name).to.equal(testAlbum.name);
           expect(res.body.genre).to.equal(testAlbum.genre);
+          helper.models.testAlbum = res.body;
           done();
         });
       });
@@ -73,6 +74,46 @@ describe('Album Router Test', function() {
         expect(name).to.equal(testAlbum.name);
         expect(genre).to.equal(testAlbum.genre);
         done();
+      });
+    });
+  });
+  describe('PUT /api/album', function() {
+    describe('With a valid object id and valid credentials', function() {
+      it('Should return a modified object and 200 status code', done => {
+        superagent.put(`${url}/api/album/${helper.models.testAlbum._id}`)
+        .set('Authorization', `Bearer ${helper.tokens.testUser}`)
+        .send({name: 'second album'})
+        .end((err, res) => {
+          if(err) return done(err);
+          let {name, genre} = res.body;
+          expect(res.status).to.equal(200);
+          expect(name).to.equal(testAlbum.name);
+          expect(genre).to.equal(testAlbum.genre);
+          done();
+        });
+      });
+    });
+    describe('With a invalid object id and valid credentials', function() {
+      it('Should return a modified object and 200 status code', done => {
+        superagent.put(`${url}/api/album/${1234}`)
+        .set('Authorization', `Bearer ${helper.tokens.testUser}`)
+        .send({name: 'second album'})
+        .end(err => {
+          expect(err.status).to.equal(400);
+          done();
+        });
+      });
+    });
+
+    describe('With a invalid object id and invalid credentials', function() {
+      it('Should return a modified object and 200 status code', done => {
+        superagent.put(`${url}/api/album/${1234}`)
+        .set('Authorization', `Bearer ${1234}`)
+        .send({name: 'second album'})
+        .end(err => {
+          expect(err.status).to.equal(401);
+          done();
+        });
       });
     });
   });
