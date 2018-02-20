@@ -131,10 +131,10 @@ describe('Album Router Test', function() {
     });
     describe('With valid credentials and an invalid object id', function() {
       it('Should return a 400 error code', done => {
-        superagent.delete(`${url}/api/album/${helper.models.testAlbum._id}`)
+        superagent.delete(`${url}/api/album/${1234}`)
         .set('Authorization', `Bearer ${helper.tokens.testUser}`)
         .end(err => {
-          expect(err.status).to.equal(400);
+          expect(err.status).to.equal(404);
           done();
         });
       });

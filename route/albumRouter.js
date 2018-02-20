@@ -33,3 +33,10 @@ albumRouter.put('/api/album/:_id', bearerAuth, jsonParser, function(req, res, ne
   .then(updatedAlbum => res.json(updatedAlbum))
   .catch(err => next(createError(400, err.message)));
 })
+albumRouter.delete('/api/album/:_id', bearerAuth, function(req, res, next) {
+  debug('DELETE /api/album');
+
+  Album.findByIdAndRemove(req.params._id)
+  .then(() => res.end())
+  .catch(err => next(createError(404, 'Object id not found')));
+})
