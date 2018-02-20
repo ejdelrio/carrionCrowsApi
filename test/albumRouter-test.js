@@ -87,7 +87,7 @@ describe('Album Router Test', function() {
           if(err) return done(err);
           let {name, genre} = res.body;
           expect(res.status).to.equal(200);
-          expect(name).to.equal(testAlbum.name);
+          expect(name).to.not.equal(testAlbum.name);
           expect(genre).to.equal(testAlbum.genre);
           done();
         });

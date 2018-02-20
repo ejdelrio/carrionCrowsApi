@@ -25,3 +25,11 @@ albumRouter.get('/api/album', function(req, res, next) {
   .then(allAlbums => res.json(allAlbums))
   .catch(err => next(createError(400, err.message)));
 })
+
+albumRouter.put('/api/album/:_id', bearerAuth, jsonParser, function(req, res, next) {
+  debug('PUT /api/album');
+
+  Album.findByIdAndUpdate(req.params._id, req.body, {new: true})
+  .then(updatedAlbum => res.json(updatedAlbum))
+  .catch(err => next(createError(400, err.message)));
+})
