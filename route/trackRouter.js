@@ -21,7 +21,7 @@ const dataDir = `${__dirname}/../data`;
 const upload = multer({ dest: dataDir });
 
 const trackRouter = module.exports = Router();
-var trackKey = '';
+var trackKey = 'Track';
 
 function s3uploadProm(params) {
   return new Promise((resolve, reject) => {
@@ -31,6 +31,15 @@ function s3uploadProm(params) {
     });
   });
 };
+
+function s3deleteProm(params) {
+  return new Promise((resolve, reject) => {
+    s3.deleteObject(params, (err, s3data) => {
+      if (err) console.log(err);
+      resolve(s3data);
+    })
+  })
+}
 
 trackRouter.post('/api/track/:albumId', bearerAuth, upload.single('soundFile'), function (req, res, next) {
   debug('POST: /api/track/:albumId');
@@ -68,41 +77,33 @@ trackRouter.post('/api/track/:albumId', bearerAuth, upload.single('soundFile'), 
       {new: true}
     );
   })
-  .then(() => console.log('__TRACK_CREATED__'))
   .then(() => res.json(trackObject))
   .catch(err => next(createError(400, err.message)));
 
 });
 
-trackRouter.delete(`/api/album/:id/track/:_id`, bearerAuth, function (req, rsp, done) {
-  console.log(req.body);
+trackRouter.delete(`/api/album/:albumId/track/:trackId`, jsonParser, bearerAuth, function (req, rsp, next) {
+  debug('DELETE /api/album/:albumId/track/:trackId');
+  let {trackId, albumId} = req.params;
+
   var params = {
     Bucket: process.env.AWS_BUCKET,
     Key: `${trackKey}`
   }
 
-  function s3deleteProm(params) {
-    return new Promise((resolve, reject) => {
-      s3.deleteObject(params, (err, s3data) => {
-        if (err) console.log(err);
-        resolve(s3data);
-      })
-    })
-  }
+  
 
-  Album.findById(req.params.id)
-    .then(() => {
-      return Track.findByIdAndRemove(`${req.params._id}`)
-    })
-    .then(() => {
-      return s3deleteProm(params).then(() => { console.log('deleted ', params.Key)})
-    })
-    .then(() => {
-      rsp.send(204);
-      rsp.end();
-      done();
-    })
-    .catch((err) => {
-      done(err);
-    })
+  Album.findByIdAndUpdate(albumId, {$pull : {tracks: trackId}})
+  .then(album =>  {
+    console.log('__ALTERED_ALBUM__: ', album);
+    return Track.findByIdAndRemove(trackId)
+  })
+  .then(() => s3deleteProm(params))
+  .then(() => console.log('deleted ', params.Key))
+  .then(() => {
+    rsp.send(204);
+    rsp.end();
+    next();
+  })
+  .catch((err) => next(createError(400, err.message)));
 });

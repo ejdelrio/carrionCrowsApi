@@ -35,6 +35,7 @@ describe('Track Router Test', function() {
         .set('Authorization', `Bearer ${helper.tokens.testUser}`)
         .end((err, res) => {
           if(err) return done(err);
+          console.log('__S3_RESPONSE__: ', res.body);
           expect(res.status).to.equal(200);
           done();
         })
