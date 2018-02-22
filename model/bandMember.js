@@ -7,7 +7,9 @@ const {Schema} = mongoose;
 const bandMemberSchema = new Schema({
   name: {type: 'string', required: true},
   bio: {type: 'string', required: false, default: ''},
-  photoUrl: {type: 'string', required: false, default: ''},
+  awsKey: {type: 'string', required: false, default: ''},
+  awsUTI: {type: 'string', required: false, default: ''},
+  url: {type: 'string', required: false, default: ''},
   instruments: [{type: Schema.Types.String, required: false}]
 });
 
