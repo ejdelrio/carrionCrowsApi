@@ -21,7 +21,7 @@ const dataDir = `${__dirname}/../data`;
 const upload = multer({ dest: dataDir });
 
 const trackRouter = module.exports = Router();
-var trackKey = 'Track';
+var trackKey = '';
 
 function s3uploadProm(params) {
   return new Promise((resolve, reject) => {
@@ -36,9 +36,10 @@ function s3deleteProm(params) {
   return new Promise((resolve, reject) => {
     s3.deleteObject(params, (err, s3data) => {
       if (err) console.log(err);
+      console.log('__S#_OBJECT_DELETED__');
       resolve(s3data);
-    })
-  })
+    });
+  });
 }
 
 trackRouter.post('/api/track/:albumId', bearerAuth, upload.single('soundFile'), function (req, res, next) {
@@ -82,27 +83,29 @@ trackRouter.post('/api/track/:albumId', bearerAuth, upload.single('soundFile'), 
 
 });
 
-trackRouter.delete(`/api/album/:albumId/track/:trackId`, jsonParser, bearerAuth, function (req, rsp, next) {
+trackRouter.delete(`/api/album/:albumId/track/:awsKey`, jsonParser, bearerAuth, function (req, res, next) {
   debug('DELETE /api/album/:albumId/track/:trackId');
-  let {trackId, albumId} = req.params;
+  let {awsKey, albumId} = req.params;
+  var responseAlbum;
 
   var params = {
     Bucket: process.env.AWS_BUCKET,
-    Key: `${trackKey}`
-  }
+    Key: `${awsKey}`
+  };
+  console.log('__PARAMS__: ', params);
 
   
 
-  Album.findByIdAndUpdate(albumId, {$pull : {tracks: trackId}})
+  Album.findByIdAndUpdate(albumId, {$pull : {awsKey}}, {new: true})
   .then(album =>  {
     console.log('__ALTERED_ALBUM__: ', album);
-    return Track.findByIdAndRemove(trackId)
+    responseAlbum = album;
+    return Track.findOneAndRemove({awsKey});
   })
   .then(() => s3deleteProm(params))
-  .then(() => console.log('deleted ', params.Key))
   .then(() => {
-    rsp.send(204);
-    rsp.end();
+    res.json(responseAlbum);
+    res.end();
     next();
   })
   .catch((err) => next(createError(400, err.message)));
