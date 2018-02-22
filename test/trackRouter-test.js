@@ -62,15 +62,16 @@ describe('Track Router Test', function() {
   describe('DELETE /api/album/:albumId/track/:awsKey', function() {
     describe('With valid credentials and valid object ids', function() {
       it('Should return a 200 status code', done => {
-        let albumId = helper.models.testAlbum._id;
-        let trackId = trackData.awsKey;
+        let {name, genre, _id} = helper.models.testAlbum;
+        let {awsKey} = trackData;
         let token = helper.tokens.testUser;
 
-        superagent.delete(`${url}/api/album/${albumId}/track/${trackId}`)
+        superagent.delete(`${url}/api/album/${_id}/track/${awsKey}`)
         .set('Authorization', `Bearer ${token}`)
         .end((err, res) => {
           if(err) return done(err);
-          console.log(res.body);
+          expect(res.body.name).to.equal(name);
+          expect(res.body.genre).to.equal(genre);
           expect(res.status).to.equal(200);
           done();
         });

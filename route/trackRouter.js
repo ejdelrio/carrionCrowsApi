@@ -36,7 +36,7 @@ function s3deleteProm(params) {
   return new Promise((resolve, reject) => {
     s3.deleteObject(params, (err, s3data) => {
       if (err) console.log(err);
-      console.log('__S#_OBJECT_DELETED__');
+
       resolve(s3data);
     });
   });
@@ -92,13 +92,10 @@ trackRouter.delete(`/api/album/:albumId/track/:awsKey`, jsonParser, bearerAuth, 
     Bucket: process.env.AWS_BUCKET,
     Key: `${awsKey}`
   };
-  console.log('__PARAMS__: ', params);
-
-  
+  console.log(params);
 
   Album.findByIdAndUpdate(albumId, {$pull : {awsKey}}, {new: true})
   .then(album =>  {
-    console.log('__ALTERED_ALBUM__: ', album);
     responseAlbum = album;
     return Track.findOneAndRemove({awsKey});
   })
